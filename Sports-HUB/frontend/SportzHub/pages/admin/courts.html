@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Courts - SportzHub Admin</title>
+    <link rel="stylesheet" href="../../assets/css/style.css" />
+    <link rel="stylesheet" href="../../assets/css/admin.css" />
+  </head>
+  <body>
+    <div class="admin-container">
+      <!-- Sidebar -->
+      <nav class="admin-sidebar">
+        <div style="padding: 1rem 1.5rem; border-bottom: 1px solid #34495e">
+          <h2 style="color: white; margin: 0">SportzHub Admin</h2>
+        </div>
+        <ul class="admin-nav">
+          <li><a href="dashboard.html">📊 Dashboard</a></li>
+          <li><a href="courts.html" class="active">🏟️ Manage Courts</a></li>
+          <li><a href="bookings.html">📅 Manage Bookings</a></li>
+          <li>
+            <a href="#" onclick="alert('Users management to be implemented')"
+              >👥 Users</a
+            >
+          </li>
+          <li>
+            <a href="#" onclick="alert('Reports to be implemented')"
+              >📈 Reports</a
+            >
+          </li>
+          <li>
+            <a href="#" onclick="alert('Settings to be implemented')"
+              >⚙️ Settings</a
+            >
+          </li>
+          <li><a href="../login.html" id="logoutBtn">🚪 Logout</a></li>
+        </ul>
+      </nav>
+
+      <!-- Main Content -->
+      <main class="admin-main">
+        <!-- Header -->
+        <header class="admin-header">
+          <h1>Manage Courts</h1>
+          <div class="admin-user">
+            <span>Welcome, <span id="userName">Admin</span></span>
+            <button class="btn btn-primary" onclick="showAddCourtForm()">
+              + Add New Court
+            </button>
+          </div>
+        </header>
+
+        <!-- Add/Edit Court Form -->
+        <section
+          id="courtFormSection"
+          class="admin-form"
+          style="display: none; margin-bottom: 2rem"
+        >
+          <h2 id="formTitle">Add New Court</h2>
+          <form id="courtForm">
+            <input type="hidden" id="courtId" name="id" />
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="courtName">Court Name *</label>
+                <input type="text" id="courtName" name="name" required />
+              </div>
+              <div class="form-group">
+                <label for="courtType">Court Type *</label>
+                <select id="courtType" name="type" required>
+                  <option value="">Select type</option>
+                  <option value="Futsal">Futsal</option>
+                  <option value="Badminton">Badminton</option>
+                  <option value="Padel">Padel</option>
+                  <option value="Tennis">Tennis</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="courtLocation">Location *</label>
+                <input
+                  type="text"
+                  id="courtLocation"
+                  name="location"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="courtPrice">Price per Hour *</label>
+                <input
+                  type="number"
+                  id="courtPrice"
+                  name="price"
+                  step="0.01"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="courtStatus">Status *</label>
+                <select id="courtStatus" name="status" required>
+                  <option value="available">Available</option>
+                  <option value="maintenance">Maintenance</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="courtCapacity">Capacity</label>
+                <input
+                  type="number"
+                  id="courtCapacity"
+                  name="capacity"
+                  min="1"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="courtDescription">Description</label>
+              <textarea
+                id="courtDescription"
+                name="description"
+                rows="3"
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="courtFeatures">Features (comma-separated)</label>
+              <input
+                type="text"
+                id="courtFeatures"
+                name="features"
+                placeholder="e.g., Air conditioning, Sound system, Lighting"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="courtRules">Rules & Regulations</label>
+              <textarea id="courtRules" name="rules" rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary">Save Court</button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="hideCourtForm()"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Courts Table -->
+        <section class="admin-table">
+          <div id="courtsTable">
+            <div class="loading">
+              <div class="spinner"></div>
+              <p>Loading courts...</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="../../assets/js/main.js"></script>
+    <script src="../../assets/js/admin.js"></script>
+    <script>
+      // Check admin authentication on page load
+      document.addEventListener("DOMContentLoaded", () => {
+        const userToken = localStorage.getItem("userToken");
+        const userRole = localStorage.getItem("userRole");
+        const userName = localStorage.getItem("userName");
+
+        if (!userToken) {
+          alert("Please log in to access the admin panel.");
+          window.location.href = "../login.html";
+          return;
+        }
+
+        if (userRole !== "admin") {
+          alert("Access denied. Admin privileges required.");
+          window.location.href = "../index.html";
+          return;
+        }
+
+        // Update admin name display
+        if (userName) {
+          const userNameElement = document.getElementById("userName");
+          if (userNameElement) {
+            userNameElement.textContent = userName;
+          }
+        }
+
+        // Add logout functionality
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (logoutBtn) {
+          logoutBtn.onclick = (e) => {
+            e.preventDefault();
+            if (confirm("Are you sure you want to logout?")) {
+              localStorage.clear();
+              window.location.href = "../login.html";
+            }
+          };
+        }
+      });
+
+      function showAddCourtForm() {
+        document.getElementById("courtFormSection").style.display = "block";
+        document.getElementById("formTitle").textContent = "Add New Court";
+        document.getElementById("courtForm").reset();
+        document.getElementById("courtId").value = "";
+      }
+
+      function hideCourtForm() {
+        document.getElementById("courtFormSection").style.display = "none";
+      }
+
+      function editCourt(courtId) {
+        // This would be called by the admin.js
+        showAddCourtForm();
+        document.getElementById("formTitle").textContent = "Edit Court";
+        // Form would be populated with court data
+      }
+    </script>
+  </body>
+</html>
