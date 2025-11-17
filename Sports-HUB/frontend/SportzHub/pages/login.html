@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - SportzHub</title>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+  </head>
+  <body>
+    <!-- Header is hidden on login page -->
+
+    <main>
+      <div class="container" style="max-width: 500px; margin-top: 3rem">
+        <div class="admin-form">
+          <h1>Login to SportzHub</h1>
+
+          <div>
+
+          <form id="loginForm">
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input type="email" id="email" name="email" required />
+            </div>
+
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" id="password" name="password" required />
+            </div>
+
+            <div class="form-group">
+              <label>
+                <input type="checkbox" name="remember" /> Remember me
+              </label>
+            </div>
+
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary" style="width: 100%">
+                Login
+              </button>
+            </div>
+          </form>
+
+          <div class="text-center" style="margin-top: 2rem">
+            <p>
+              Don't have an account? <a href="register.html">Register here</a>
+            </p>
+            <p>
+              <a
+                href="#"
+                onclick="alert('Password reset functionality to be implemented')"
+                >Forgot your password?</a
+              >
+            </p>
+
+            <!-- Login Instructions -->
+            <div
+              style="
+                background: #f8f9fa;
+                padding: 1rem;
+                border-radius: 8px;
+                margin-top: 1rem;
+                text-align: left;
+              "
+            >
+              <h4 style="margin-bottom: 0.5rem; color: #1e3c72">
+                Login Instructions:
+              </h4>
+              <p style="margin: 0.25rem 0">
+                <strong>Admin Access:</strong>
+              </p>
+              <p style="margin: 0 0 0.5rem 1rem; font-size: 0.9rem">
+                shahzaib@admin.com / password: 123<br>
+                sufyan@admin.com / password: 123
+              </p>
+              <p style="margin: 0.25rem 0">
+                <strong>User Access:</strong> Register a new account or login with your credentials
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer is hidden on login page -->
+
+    <style>
+      body {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        min-height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+      }
+      
+      .container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+      }
+
+      .admin-form {
+        width: 100%;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+      
+      .admin-form h1 {
+        background: #1e3c72;
+        color: white;
+        margin: 0;
+        padding: 2rem;
+        text-align: center;
+        font-size: 1.8rem;
+      }
+      
+      .admin-form > div:not(:first-child) {
+        padding: 2rem;
+      }
+      
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+      
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #333;
+      }
+      
+      .form-group input[type="email"],
+      .form-group input[type="password"] {
+        width: 100%;
+        padding: 0.8rem;
+        border: 2px solid #ddd;
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+        box-sizing: border-box;
+      }
+      
+      .form-group input:focus {
+        outline: none;
+        border-color: #1e3c72;
+      }
+      
+      .btn {
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+      
+      .btn-primary {
+        background: #1e3c72;
+        color: white;
+      }
+      
+      .btn-primary:hover {
+        background: #2a5298;
+        transform: translateY(-1px);
+      }
+      
+      a {
+        color: #1e3c72;
+        text-decoration: none;
+      }
+      
+      a:hover {
+        text-decoration: underline;
+      }
+    </style>
+
+    <script src="../assets/js/main.js"></script>
+    <script>
+      document.getElementById("loginForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const email = formData.get("email").toLowerCase().trim();
+        const password = formData.get("password");
+
+        try {
+          const response = await fetch("http://localhost:8000/auth/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ email, password })
+          });
+
+          const data = await response.json();
+          
+          if (response.ok && data.user && data.token) {
+            // Login successful
+            localStorage.setItem("userToken", data.token);
+            localStorage.setItem("userRole", data.user.role);
+            localStorage.setItem("userName", data.user.name);
+            localStorage.setItem("userEmail", data.user.email);
+            localStorage.setItem("userId", data.user.id);
+
+            // Redirect based on role
+            if (data.user.role === "admin") {
+              window.location.href = "admin/dashboard.html";
+            } else {
+              window.location.href = "index.html";
+            }
+          } else {
+            alert(data.message || "Login failed. Please check your credentials.");
+          }
+        } catch (error) {
+          console.error("Login error:", error);
+          alert("Login failed. Please check your credentials or register a new account.");
+        }
+      });
+
+      // Redirect if already logged in
+      if (localStorage.getItem("userToken")) {
+        const role = localStorage.getItem("userRole");
+        if (role === "admin") {
+          window.location.href = "admin/dashboard.html";
+        } else {
+          window.location.href = "index.html";
+        }
+      }
+    </script>
+  </body>
+</html>

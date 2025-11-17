@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SportzHub - Premium Sports Court Booking</title>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+  </head>
+  <body>
+    <div id="header"></div>
+
+    <main>
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="container">
+          <div class="hero-left">
+            <a href="index.html" class="hero-logo">SportzHub</a>
+            <div class="hero-welcome">
+              <h1 id="welcomeText">Welcome to SportzHub</h1>
+              <p>
+                Book premium sports facilities with ease. Quality courts at your
+                fingertips.
+              </p>
+            </div>
+          </div>
+          <div class="hero-right">
+            <div class="user-avatar">👤</div>
+            <div class="user-info">
+              <div class="user-label">Logged in as</div>
+              <div class="user-name" id="userNameDisplay">Guest</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sports Section -->
+      <section class="container">
+        <h2
+          class="text-center"
+          style="margin-bottom: 2rem; color: #1e3c72; font-size: 2.5rem"
+        >
+          Choose Your Sport
+        </h2>
+        <div class="court-grid">
+          <div class="card sport-card">
+            <div class="sport-icon">🥅</div>
+            <h3 style="color: #1e3c72; font-size: 1.5rem">Futsal Courts</h3>
+            <p style="color: #666; min-height: 60px">
+              Professional futsal courts with high-quality surfaces and
+              equipment.
+            </p>
+            <a
+              href="futsal.html"
+              class="btn btn-primary"
+              style="margin-top: 1rem"
+              >View Courts</a
+            >
+          </div>
+          <div class="card sport-card">
+            <div class="sport-icon">🏸</div>
+            <h3 style="color: #1e3c72; font-size: 1.5rem">Badminton Courts</h3>
+            <p style="color: #666; min-height: 60px">
+              Indoor badminton courts with proper lighting and ventilation.
+            </p>
+            <a
+              href="badminton.html"
+              class="btn btn-primary"
+              style="margin-top: 1rem"
+              >View Courts</a
+            >
+          </div>
+          <div class="card sport-card">
+            <div class="sport-icon">🎾</div>
+            <h3 style="color: #1e3c72; font-size: 1.5rem">Padel Courts</h3>
+            <p style="color: #666; min-height: 60px">
+              Modern padel courts with professional glass walls and surfaces.
+            </p>
+            <a
+              href="padel.html"
+              class="btn btn-primary"
+              style="margin-top: 1rem"
+              >View Courts</a
+            >
+          </div>
+          <div class="card sport-card">
+            <div class="sport-icon">🏏</div>
+            <h3 style="color: #1e3c72; font-size: 1.5rem">Cricket Grounds</h3>
+            <p style="color: #666; min-height: 60px">
+              Premium cricket grounds with professional pitches and facilities.
+            </p>
+            <a
+              href="cricket.html"
+              class="btn btn-primary"
+              style="margin-top: 1rem"
+              >View Grounds</a
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="footer"></div>
+
+    <script>
+      // IMMEDIATE authentication check - before page loads
+      (function () {
+        const userToken = localStorage.getItem("userToken");
+        const userRole = localStorage.getItem("userRole");
+
+        if (!userToken) {
+          // Not authenticated, redirect to login immediately
+          window.location.replace("login.html");
+          return;
+        }
+
+        if (userRole === "admin") {
+          // Admin user trying to access user page, redirect to admin dashboard
+          window.location.replace("admin/dashboard.html");
+          return;
+        }
+      })();
+    </script>
+
+    <script src="../assets/js/main.js"></script>
+    <script>
+      // Update welcome message and user info after page loads
+      document.addEventListener("DOMContentLoaded", () => {
+        const userName = localStorage.getItem("userName");
+        const userEmail = localStorage.getItem("userEmail");
+
+        if (userName) {
+          // Update welcome text
+          const welcomeText = document.getElementById("welcomeText");
+          if (welcomeText) {
+            welcomeText.textContent = `Welcome back, ${userName}!`;
+          }
+
+          // Update user name display
+          const userNameDisplay = document.getElementById("userNameDisplay");
+          if (userNameDisplay) {
+            userNameDisplay.textContent = userName;
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

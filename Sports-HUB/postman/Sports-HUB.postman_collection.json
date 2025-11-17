@@ -1,0 +1,362 @@
+{
+  "info": {
+    "name": "Sports-HUB API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "f4d7e2a6-54f7-4d8a-b2b6-111111111111"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8000" },
+    { "key": "token", "value": "" },
+    { "key": "user_id", "value": "1" },
+    { "key": "court_id", "value": "1" },
+    { "key": "booking_id", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Test User\",\n  \"email\": \"user@example.com\",\n  \"phone_number\": \"+10000000000\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Courts",
+      "item": [
+        {
+          "name": "List Courts",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/courts",
+              "host": ["{{baseUrl}}"],
+              "path": ["courts"]
+            }
+          }
+        },
+        {
+          "name": "Get Court By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/courts/{{court_id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["courts", "{{court_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Court Slots",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/courts/{{court_id}}/slots?date=2025-11-13",
+              "host": ["{{baseUrl}}"],
+              "path": ["courts", "{{court_id}}", "slots"],
+              "query": [{ "key": "date", "value": "2025-11-13" }]
+            }
+          }
+        },
+        {
+          "name": "Search Courts",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/courts/search?q=padel&type=padel&location=city&max_price=100",
+              "host": ["{{baseUrl}}"],
+              "path": ["courts", "search"],
+              "query": [
+                { "key": "q", "value": "padel" },
+                { "key": "type", "value": "padel" },
+                { "key": "location", "value": "city" },
+                { "key": "max_price", "value": "100" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Court Types",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/courts/types",
+              "host": ["{{baseUrl}}"],
+              "path": ["courts", "types"]
+            }
+          }
+        },
+        {
+          "name": "Locations",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/courts/locations",
+              "host": ["{{baseUrl}}"],
+              "path": ["courts", "locations"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "Create Booking (slot_id)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/bookings",
+              "host": ["{{baseUrl}}"],
+              "path": ["bookings"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": {{user_id}},\n  \"slot_id\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Booking (court/date/time)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/bookings",
+              "host": ["{{baseUrl}}"],
+              "path": ["bookings"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": {{user_id}},\n  \"court_id\": {{court_id}},\n  \"date\": \"2025-11-13\",\n  \"time\": \"10:00\"\n}"
+            }
+          }
+        },
+        {
+          "name": "My Bookings",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/bookings?user_id={{user_id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["bookings"],
+              "query": [{ "key": "user_id", "value": "{{user_id}}" }]
+            }
+          }
+        },
+        {
+          "name": "Cancel Booking",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{baseUrl}}/bookings/{{booking_id}}/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["bookings", "{{booking_id}}", "cancel"]
+            }
+          }
+        },
+        {
+          "name": "Update Booking",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/bookings/{{booking_id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["bookings", "{{booking_id}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"confirmed\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "dashboard"]
+            }
+          }
+        },
+        {
+          "name": "All Courts",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/courts",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "courts"]
+            }
+          }
+        },
+        {
+          "name": "Create Court",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/courts",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "courts"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"court_name\": \"Padel A\",\n  \"court_type\": \"padel\",\n  \"location\": \"City Center\",\n  \"price_per_hour\": 50\n}"
+            }
+          }
+        },
+        {
+          "name": "Court By ID (admin)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/courts/{{court_id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "courts", "{{court_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Court",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/courts/{{court_id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "courts", "{{court_id}}"]
+            },
+            "body": { "mode": "raw", "raw": "{\n  \"price_per_hour\": 60\n}" }
+          }
+        },
+        {
+          "name": "Delete Court",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/admin/courts/{{court_id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "courts", "{{court_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Generate Time Slots",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/courts/{{court_id}}/slots",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "courts", "{{court_id}}", "slots"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2025-11-13\",\n  \"start_time\": \"08:00\",\n  \"end_time\": \"22:00\",\n  \"duration\": 60\n}"
+            }
+          }
+        },
+        {
+          "name": "All Bookings",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/bookings",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "bookings"]
+            }
+          }
+        },
+        {
+          "name": "Today Bookings",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/bookings/today",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "bookings", "today"]
+            }
+          }
+        },
+        {
+          "name": "Booking By ID (admin)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/admin/bookings/{{booking_id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "bookings", "{{booking_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Booking (admin)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/bookings/{{booking_id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "bookings", "{{booking_id}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"confirmed\"\n}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

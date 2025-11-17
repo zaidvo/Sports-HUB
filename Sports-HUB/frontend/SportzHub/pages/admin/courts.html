@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Courts - SportzHub Admin</title>
+    <link rel="stylesheet" href="../../assets/css/style.css?v=2" />
+    <link rel="stylesheet" href="../../assets/css/admin.css?v=2" />
+  </head>
+  <body>
+    <!-- Top Navigation -->
+    <nav class="admin-topnav">
+      <div class="admin-topnav-container">
+        <a href="dashboard.html" class="admin-logo">SportzHub Admin</a>
+        <ul class="admin-nav">
+          <li>
+            <a href="dashboard.html">
+              <span class="admin-nav-icon">📊</span>
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="courts.html" class="active">
+              <span class="admin-nav-icon">🏟️</span>
+              Manage Courts
+            </a>
+          </li>
+          <li>
+            <a href="bookings.html">
+              <span class="admin-nav-icon">📅</span>
+              Manage Bookings
+            </a>
+          </li>
+        </ul>
+        <div class="admin-user">
+          <div class="admin-user-info">
+            <span>👤</span>
+            <span id="userName">Admin</span>
+          </div>
+          <button class="logout-btn" id="logoutBtn">Logout</button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="admin-container">
+      <!-- Main Content -->
+      <main class="admin-main">
+        <!-- Header -->
+        <header class="admin-header">
+          <h1>Manage Courts</h1>
+          <button
+            class="btn btn-primary"
+            onclick="showAddCourtForm()"
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              padding: 0.8rem 1.5rem;
+            "
+          >
+            <span style="font-size: 1.2rem">+</span> Add New Court
+          </button>
+        </header>
+
+        <!-- Add/Edit Court Form -->
+        <section
+          id="courtFormSection"
+          class="admin-form"
+          style="display: none; margin-bottom: 2rem"
+        >
+          <h2 id="formTitle">Add New Court</h2>
+          <form id="courtForm">
+            <input type="hidden" id="courtId" name="id" />
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="courtName">Court Name *</label>
+                <input type="text" id="courtName" name="name" required />
+              </div>
+              <div class="form-group">
+                <label for="courtType">Court Type *</label>
+                <select id="courtType" name="type" required>
+                  <option value="">Select type</option>
+                  <option value="Futsal">Futsal</option>
+                  <option value="Badminton">Badminton</option>
+                  <option value="Padel">Padel</option>
+                  <option value="Tennis">Tennis</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="location">Location *</label>
+                <input type="text" id="location" name="location" required />
+              </div>
+              <div class="form-group">
+                <label for="price">Price per Hour *</label>
+                <input
+                  type="number"
+                  id="price"
+                  name="price"
+                  step="0.01"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="status">Status *</label>
+                <select id="status" name="status" required>
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="imageUrl">Image URL</label>
+                <input
+                  type="url"
+                  id="imageUrl"
+                  name="image_url"
+                  placeholder="https://example.com/image.jpg"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary">Save Court</button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="hideCourtForm()"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Courts Table -->
+        <section class="admin-table">
+          <div id="courtsTable">
+            <div class="loading">
+              <div class="spinner"></div>
+              <p>Loading courts...</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="../../assets/js/main.js"></script>
+    <script src="../../assets/js/admin.js"></script>
+    <script>
+      function showAddCourtForm() {
+        document.getElementById("courtFormSection").style.display = "block";
+        document.getElementById("formTitle").textContent = "Add New Court";
+        document.getElementById("courtForm").reset();
+        document.getElementById("courtId").value = "";
+        document
+          .getElementById("courtFormSection")
+          .scrollIntoView({ behavior: "smooth" });
+      }
+
+      function hideCourtForm() {
+        document.getElementById("courtFormSection").style.display = "none";
+        document.getElementById("courtForm").reset();
+        document.getElementById("courtId").value = "";
+        document.getElementById("formTitle").textContent = "Add New Court";
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Badminton Courts - SportzHub</title>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+  </head>
+  <body>
+    <div id="header"></div>
+
+    <main>
+      <!-- Sport Header -->
+      <div class="sport-page-header">
+        <div class="container">
+          <div class="sport-page-header-content">
+            <div>
+              <h1>🏸 Badminton Courts</h1>
+              <p>
+                Indoor badminton courts with proper lighting and ventilation
+              </p>
+            </div>
+          </div>
+          <div class="sport-page-user-info">
+            <div class="user-avatar">👤</div>
+            <div class="user-info">
+              <div class="user-label">Logged in as</div>
+              <div class="user-name" id="userNameDisplay">Guest</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Courts Section -->
+      <div class="container">
+        <div id="loadingIndicator" class="loading">
+          <div class="spinner"></div>
+          <p>Loading badminton courts...</p>
+        </div>
+
+        <div id="courtsGrid" class="court-grid" style="display: none"></div>
+
+        <div
+          id="noCourts"
+          class="text-center"
+          style="display: none; padding: 3rem"
+        >
+          <h3>No Badminton Courts Available</h3>
+          <p>Please check back later for available courts.</p>
+        </div>
+      </div>
+    </main>
+
+    <div id="footer"></div>
+
+    <script>
+      // IMMEDIATE authentication check
+      (function () {
+        const userToken = localStorage.getItem("userToken");
+        if (!userToken) {
+          alert("Please log in to view courts.");
+          window.location.replace("login.html");
+        }
+      })();
+    </script>
+
+    <script src="../assets/js/main.js"></script>
+    <script>
+      // Load courts after authentication check
+      document.addEventListener("DOMContentLoaded", async () => {
+        // Update user name display
+        const userName = localStorage.getItem("userName");
+        if (userName) {
+          const userNameDisplay = document.getElementById("userNameDisplay");
+          if (userNameDisplay) {
+            userNameDisplay.textContent = userName;
+          }
+        }
+
+        await loadBadmintonCourts();
+      });
+
+      async function loadBadmintonCourts() {
+        try {
+          // Fetch all Badminton courts from database
+          const response = await fetch(
+            "http://localhost:8000/courts?type=Badminton"
+          ).then((res) => res.json());
+          const courts = response.courts || response;
+
+          console.log(
+            `Loaded ${
+              courts ? courts.length : 0
+            } Badminton courts from database`
+          );
+
+          document.getElementById("loadingIndicator").style.display = "none";
+
+          if (!courts || courts.length === 0) {
+            document.getElementById("noCourts").style.display = "block";
+            return;
+          }
+
+          const courtsGrid = document.getElementById("courtsGrid");
+          courtsGrid.style.display = "grid";
+
+          courtsGrid.innerHTML = courts
+            .map((court) => {
+              // Backend returns: id, name, type, location, price_per_hour, status, image_url
+              const courtId = court.id;
+              const courtName = court.name;
+              const price = court.price_per_hour;
+              const isActive = court.status === "active";
+              const imageUrl =
+                court.image_url || "../assets/images/badminton.jpg";
+
+              return `
+              <div class="card">
+                <div class="court-image">
+                  <img src="${imageUrl}" 
+                       alt="${courtName}" 
+                       class="court-card-image"
+                       onerror="if(!this.dataset.errored){this.dataset.errored='true';this.style.display='none';this.parentElement.style.background='linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)';this.parentElement.innerHTML='<div style=&quot;display:flex;align-items:center;justify-content:center;height:200px;color:white;font-size:3rem;&quot;>🏸</div>';}">
+                  <div class="court-status ${
+                    isActive ? "available" : "maintenance"
+                  }" 
+                       style="position: absolute; top: 10px; right: 10px;">
+                    <span class="badge ${
+                      isActive ? "badge-success" : "badge-warning"
+                    }">
+                      ${isActive ? "Available" : "Maintenance"}
+                    </span>
+                  </div>
+                </div>
+                <div class="court-info" style="padding: 1.5rem;">
+                  <h3 style="color: #1e3c72; margin-bottom: 0.5rem;">${courtName}</h3>
+                  <p style="color: #666; margin-bottom: 1rem;">
+                    <strong>📍 Location:</strong> ${court.location}
+                  </p>
+                  
+                  <ul class="court-details-list" style="margin: 1rem 0;">
+                    <li><strong>Surface:</strong> Synthetic wooden flooring</li>
+                    <li><strong>Height:</strong> International standard clearance</li>
+                    <li><strong>Lighting:</strong> Anti-glare LED lights</li>
+                    <li><strong>Ventilation:</strong> Climate-controlled environment</li>
+                    <li><strong>Equipment:</strong> Premium nets and poles</li>
+                  </ul>
+
+                  <div class="court-pricing" style="margin: 1.5rem 0;">
+                    <span class="price" style="font-size: 2rem; font-weight: bold; color: #1e3c72;">
+                      $${parseFloat(price).toFixed(2)}
+                    </span>
+                    <span class="price-unit" style="color: #666;">/hour</span>
+                  </div>
+
+                  <div class="court-actions" style="display: flex; gap: 0.5rem;">
+                    <button class="btn btn-primary" style="flex: 1;" 
+                            onclick="window.location.href='booking.html?type=Badminton&court=${courtId}'">
+                      Book Now
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `;
+            })
+            .join("");
+        } catch (error) {
+          console.error("Error loading badminton courts:", error);
+          document.getElementById("loadingIndicator").style.display = "none";
+          document.getElementById("noCourts").style.display = "block";
+          document.getElementById("noCourts").innerHTML = `
+            <h3>Error Loading Courts</h3>
+            <p>${
+              error.message || "Unable to load courts. Please try again later."
+            }</p>
+          `;
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Bookings - SportzHub</title>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+  </head>
+  <body>
+    <div id="header"></div>
+
+    <main>
+      <div class="container">
+        <h1>My Bookings</h1>
+
+        <!-- Filters -->
+        <section class="booking-section">
+          <h2>Filter Bookings</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="filterStatus">Status</label>
+              <select id="filterStatus" onchange="filterBookings()">
+                <option value="">All</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="pending">Pending</option>
+                <option value="cancelled">Cancelled</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="filterDate">Date</label>
+              <input type="date" id="filterDate" onchange="filterBookings()" />
+            </div>
+          </div>
+        </section>
+
+        <!-- Bookings List -->
+        <section class="booking-section">
+          <div id="bookingsContainer">
+            <div class="loading">
+              <div class="spinner"></div>
+              <p>Loading your bookings...</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <div id="footer"></div>
+
+    <style>
+      .booking-section {
+        background: white;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .booking-section h2 {
+        color: #1e3c72;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #f0f0f0;
+      }
+
+      .booking-card {
+        background: #f8f9fa;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .booking-card:hover {
+        border-color: #1e3c72;
+        box-shadow: 0 4px 12px rgba(30, 60, 114, 0.1);
+      }
+
+      .booking-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .booking-id {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #1e3c72;
+      }
+
+      .booking-status {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 0.9rem;
+      }
+
+      .status-confirmed {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .status-pending {
+        background: #fff3cd;
+        color: #856404;
+      }
+
+      .status-cancelled {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .status-completed {
+        background: #d1ecf1;
+        color: #0c5460;
+      }
+
+      .booking-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .detail-item {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .detail-label {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 0.25rem;
+      }
+
+      .detail-value {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #333;
+      }
+
+      .booking-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+
+      @media (max-width: 768px) {
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+
+        .booking-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.5rem;
+        }
+      }
+
+      .no-bookings {
+        text-align: center;
+        padding: 3rem;
+        color: #666;
+      }
+
+      .no-bookings h3 {
+        color: #1e3c72;
+        margin-bottom: 1rem;
+      }
+    </style>
+
+    <script>
+      // IMMEDIATE authentication check
+      (function () {
+        const userToken = localStorage.getItem("userToken");
+        if (!userToken) {
+          alert("Please log in to view your bookings.");
+          window.location.replace("login.html");
+        }
+      })();
+    </script>
+
+    <script src="../assets/js/main.js"></script>
+    <script>
+      let allBookings = [];
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        await loadMyBookings();
+      });
+
+      async function loadMyBookings() {
+        try {
+          const userToken = localStorage.getItem("userToken");
+
+          const response = await fetch("http://localhost:8000/bookings", {
+            headers: {
+              Authorization: `Bearer ${userToken}`,
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to load bookings");
+          }
+
+          const data = await response.json();
+          allBookings = data.bookings || data || [];
+
+          displayBookings(allBookings);
+        } catch (error) {
+          console.error("Error loading bookings:", error);
+          document.getElementById("bookingsContainer").innerHTML = `
+            <div class="no-bookings">
+              <h3>Error Loading Bookings</h3>
+              <p>${
+                error.message ||
+                "Unable to load your bookings. Please try again later."
+              }</p>
+            </div>
+          `;
+        }
+      }
+
+      function displayBookings(bookings) {
+        const container = document.getElementById("bookingsContainer");
+
+        if (!bookings || bookings.length === 0) {
+          container.innerHTML = `
+            <div class="no-bookings">
+              <h3>No Bookings Found</h3>
+              <p>You haven't made any bookings yet.</p>
+              <a href="booking.html" class="btn btn-primary">Book a Court</a>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = bookings
+          .map(
+            (booking) => `
+          <div class="booking-card">
+            <div class="booking-header">
+              <div class="booking-id">Booking #${
+                booking.id || booking.booking_id
+              }</div>
+              <div class="booking-status status-${booking.status || "pending"}">
+                ${(booking.status || "pending").toUpperCase()}
+              </div>
+            </div>
+            
+            <div class="booking-details">
+              <div class="detail-item">
+                <span class="detail-label">Court</span>
+                <span class="detail-value">${booking.court_name || "N/A"}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Date</span>
+                <span class="detail-value">${
+                  booking.booking_date || booking.date
+                }</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Time</span>
+                <span class="detail-value">${
+                  booking.start_time || booking.time
+                }</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Duration</span>
+                <span class="detail-value">${booking.duration} hour(s)</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Total Amount</span>
+                <span class="detail-value" style="color: #1e3c72; font-weight: bold;">
+                  $${booking.total_amount || booking.total || "N/A"}
+                </span>
+              </div>
+            </div>
+
+            ${
+              booking.notes
+                ? `
+              <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #ddd;">
+                <span class="detail-label">Notes:</span>
+                <p style="margin: 0.5rem 0 0 0; color: #555;">${booking.notes}</p>
+              </div>
+            `
+                : ""
+            }
+
+            <div class="booking-actions">
+              <button class="btn btn-small" onclick="viewBookingDetails(${
+                booking.id || booking.booking_id
+              })">
+                View Details
+              </button>
+              ${
+                booking.status === "confirmed" || booking.status === "pending"
+                  ? `
+                <button class="btn btn-small btn-secondary" onclick="cancelBooking(${
+                  booking.id || booking.booking_id
+                })">
+                  Cancel Booking
+                </button>
+              `
+                  : ""
+              }
+            </div>
+          </div>
+        `
+          )
+          .join("");
+      }
+
+      function filterBookings() {
+        const statusFilter = document.getElementById("filterStatus").value;
+        const dateFilter = document.getElementById("filterDate").value;
+
+        let filtered = allBookings;
+
+        if (statusFilter) {
+          filtered = filtered.filter((b) => b.status === statusFilter);
+        }
+
+        if (dateFilter) {
+          filtered = filtered.filter(
+            (b) => (b.booking_date || b.date) === dateFilter
+          );
+        }
+
+        displayBookings(filtered);
+      }
+
+      function viewBookingDetails(bookingId) {
+        const booking = allBookings.find(
+          (b) => (b.id || b.booking_id) === bookingId
+        );
+
+        if (booking) {
+          alert(`Booking Details:\n\n${JSON.stringify(booking, null, 2)}`);
+        }
+      }
+
+      function cancelBooking(bookingId) {
+        if (confirm("Are you sure you want to cancel this booking?")) {
+          // Implement cancel booking API call
+          alert("Cancel booking functionality to be implemented");
+        }
+      }
+    </script>
+  </body>
+</html>

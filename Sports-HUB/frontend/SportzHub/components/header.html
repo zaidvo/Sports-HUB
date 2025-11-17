@@ -1,0 +1,304 @@
+<style>
+  header#authHeader {
+    display: none;
+    background: linear-gradient(90deg, #3a6186 0%, #89253e 100%);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    animation: fadeInDown 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  @keyframes fadeInDown {
+    0% {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .logo {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #fff;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    transition: color 0.3s;
+  }
+  .logo:hover {
+    color: #ff7e5f;
+  }
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    transition: gap 0.3s;
+  }
+  .nav-links li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.1rem;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+  }
+  .nav-links li a:hover {
+    background: #ff7e5f;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(255, 126, 95, 0.15);
+  }
+  .menu-toggle {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    gap: 4px;
+    margin-left: 1.5rem;
+  }
+  .menu-toggle span {
+    width: 28px;
+    height: 3px;
+    background: #fff;
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .profile-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: bold;
+    border: none;
+    box-shadow: 0 2px 8px rgba(255, 126, 95, 0.18);
+    cursor: pointer;
+    margin-left: 1.2rem;
+    transition: box-shadow 0.3s, transform 0.2s;
+    outline: none;
+    position: relative;
+  }
+  .profile-btn:hover {
+    box-shadow: 0 4px 16px rgba(255, 126, 95, 0.28);
+    transform: scale(1.08);
+  }
+  /* Modal styles */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: auto;
+    background: rgba(0, 0, 0, 0.35);
+    transition: opacity 0.3s;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-content {
+    background: #fff;
+    margin: 10vh auto;
+    padding: 2.5rem 2rem 2rem 2rem;
+    border-radius: 16px;
+    max-width: 400px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+    position: relative;
+    animation: modalFadeIn 0.4s;
+  }
+  @keyframes modalFadeIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  .close {
+    color: #aaa;
+    position: absolute;
+    top: 12px;
+    right: 18px;
+    font-size: 1.7rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .close:hover {
+    color: #ff7e5f;
+  }
+  .user-info {
+    text-align: center;
+    margin-top: 1rem;
+  }
+  .user-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin: 0 auto 1rem auto;
+    box-shadow: 0 2px 8px rgba(255, 126, 95, 0.18);
+  }
+  .user-details {
+    margin-top: 0.5rem;
+    font-size: 1.1rem;
+    color: #333;
+  }
+  .user-details strong {
+    color: #3a6186;
+  }
+</style>
+
+<header id="authHeader" style="display: none">
+  <nav
+    style="
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.7rem 2.5vw;
+    "
+  >
+    <a href="../index.html" class="logo">SportzHub</a>
+    <ul class="nav-links">
+      <li><a href="../pages/index.html">Home</a></li>
+      <li id="bookingsNav" style="display: none">
+        <a href="../pages/my-bookings.html">My Bookings</a>
+      </li>
+      <li id="loginNav"><a href="../pages/login.html">Login</a></li>
+      <li id="registerNav"><a href="../pages/register.html">Register</a></li>
+    </ul>
+    <button
+      id="profileBtn"
+      class="profile-btn"
+      style="display: none"
+      title="View Profile"
+    ></button>
+  </nav>
+</header>
+
+<!-- User Info Modal -->
+<div id="userInfoModal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="closeModal">&times;</span>
+    <div class="user-info">
+      <div class="user-avatar" id="userAvatar"></div>
+      <div class="user-details" id="userDetails">
+        <!-- User details will be loaded here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Enhanced navigation and profile modal logic
+  document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+      const userToken = localStorage.getItem("userToken");
+      const userName = localStorage.getItem("userName");
+      const userRole = localStorage.getItem("userRole");
+      const userId = localStorage.getItem("userId");
+
+      const header = document.getElementById("authHeader");
+      const loginNav = document.getElementById("loginNav");
+      const registerNav = document.getElementById("registerNav");
+      const bookingsNav = document.getElementById("bookingsNav");
+      const navLinks = document.querySelector(".nav-links");
+      const profileBtn = document.getElementById("profileBtn");
+
+      if (userToken) {
+        // User is logged in, show header and update navigation
+        if (header) header.style.display = "block";
+        if (bookingsNav && userRole !== "admin")
+          bookingsNav.style.display = "block";
+        if (loginNav && registerNav) {
+          loginNav.innerHTML = `<a href="#" style="cursor: default;">Welcome, ${
+            userName || "User"
+          }</a>`;
+          registerNav.innerHTML = `<a href="#" onclick="logout()">Logout</a>`;
+        }
+        // Show profile button with user initial
+        if (profileBtn) {
+          profileBtn.style.display = "flex";
+          profileBtn.textContent =
+            userName && userName.length > 0 ? userName[0].toUpperCase() : "U";
+          profileBtn.onclick = function () {
+            openUserInfoModal(userId);
+          };
+        }
+      } else {
+        // User not logged in, hide header and profile button
+        if (header) header.style.display = "none";
+        if (profileBtn) profileBtn.style.display = "none";
+      }
+    }, 100);
+  });
+
+  // Modal logic
+  function openUserInfoModal(userId) {
+    const modal = document.getElementById("userInfoModal");
+    const userDetails = document.getElementById("userDetails");
+    const userAvatar = document.getElementById("userAvatar");
+    const userName = localStorage.getItem("userName") || "User";
+    const userEmail = localStorage.getItem("userEmail") || "-";
+    const userRole = localStorage.getItem("userRole") || "user";
+
+    // Set avatar initial
+    userAvatar.textContent = userName[0].toUpperCase();
+
+    // Fetch user info from localStorage (replace with API if needed)
+    userDetails.innerHTML = `
+      <p><strong>Name:</strong> ${userName}</p>
+      <p><strong>Email:</strong> ${userEmail}</p>
+      <p><strong>Role:</strong> ${
+        userRole.charAt(0).toUpperCase() + userRole.slice(1)
+      }</p>
+    `;
+
+    modal.style.display = "flex";
+  }
+
+  // Close modal
+  document.getElementById("closeModal").onclick = function () {
+    document.getElementById("userInfoModal").style.display = "none";
+  };
+  window.onclick = function (event) {
+    const modal = document.getElementById("userInfoModal");
+    if (event.target === modal) {
+      modal.style.display = "none";
+    }
+  };
+
+  // Logout function
+  function logout() {
+    if (confirm("Are you sure you want to logout?")) {
+      localStorage.clear();
+      // Determine correct path for login based on current location
+      const currentPath = window.location.pathname;
+      let loginPath = "login.html";
+      if (currentPath.includes("/admin/")) {
+        loginPath = "../login.html";
+      } else if (currentPath.includes("/pages/")) {
+        loginPath = "login.html";
+      } else {
+        loginPath = "pages/login.html";
+      }
+      window.location.href = loginPath;
+    }
+  }
+</script>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Bookings - SportzHub Admin</title>
+    <link rel="stylesheet" href="../../assets/css/style.css?v=2" />
+    <link rel="stylesheet" href="../../assets/css/admin.css?v=2" />
+  </head>
+  <body>
+    <!-- Top Navigation -->
+    <nav class="admin-topnav">
+      <div class="admin-topnav-container">
+        <a href="dashboard.html" class="admin-logo">SportzHub Admin</a>
+        <ul class="admin-nav">
+          <li>
+            <a href="dashboard.html">
+              <span class="admin-nav-icon">📊</span>
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="courts.html">
+              <span class="admin-nav-icon">🏟️</span>
+              Manage Courts
+            </a>
+          </li>
+          <li>
+            <a href="bookings.html" class="active">
+              <span class="admin-nav-icon">📅</span>
+              Manage Bookings
+            </a>
+          </li>
+        </ul>
+        <div class="admin-user">
+          <div class="admin-user-info">
+            <span>👤</span>
+            <span id="userName">Admin</span>
+          </div>
+          <button class="logout-btn" id="logoutBtn">Logout</button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="admin-container">
+      <!-- Main Content -->
+      <main class="admin-main">
+        <!-- Header -->
+        <header class="admin-header">
+          <h1>Manage Bookings</h1>
+          <button
+            class="btn btn-primary"
+            onclick="showAddBookingForm()"
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              padding: 0.8rem 1.5rem;
+            "
+          >
+            <span style="font-size: 1.2rem">+</span> Add Manual Booking
+          </button>
+        </header>
+
+        <!-- Add/Edit Booking Form -->
+        <section
+          id="bookingFormSection"
+          class="admin-form"
+          style="display: none; margin-bottom: 2rem"
+        >
+          <h2 id="bookingFormTitle">Add Manual Booking</h2>
+          <form id="bookingForm">
+            <input type="hidden" id="bookingId" name="id" />
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="bookingCourt">Court *</label>
+                <select id="bookingCourt" name="court_id" required>
+                  <option value="">Select court</option>
+                  <!-- Will be populated dynamically -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="bookingDate">Date *</label>
+                <input
+                  type="date"
+                  id="bookingDate"
+                  name="booking_date"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="bookingTime">Time *</label>
+                <select id="bookingTime" name="start_time" required>
+                  <option value="">Select time</option>
+                  <option value="08:00">08:00 AM</option>
+                  <option value="09:00">09:00 AM</option>
+                  <option value="10:00">10:00 AM</option>
+                  <option value="11:00">11:00 AM</option>
+                  <option value="12:00">12:00 PM</option>
+                  <option value="13:00">01:00 PM</option>
+                  <option value="14:00">02:00 PM</option>
+                  <option value="15:00">03:00 PM</option>
+                  <option value="16:00">04:00 PM</option>
+                  <option value="17:00">05:00 PM</option>
+                  <option value="18:00">06:00 PM</option>
+                  <option value="19:00">07:00 PM</option>
+                  <option value="20:00">08:00 PM</option>
+                  <option value="21:00">09:00 PM</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="bookingDuration">Duration (hours) *</label>
+                <select id="bookingDuration" name="duration" required>
+                  <option value="1">1 hour</option>
+                  <option value="2">2 hours</option>
+                  <option value="3">3 hours</option>
+                  <option value="4">4 hours</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="customerName">Customer Name *</label>
+                <input
+                  type="text"
+                  id="customerName"
+                  name="customer_name"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="customerEmail">Customer Email *</label>
+                <input
+                  type="email"
+                  id="customerEmail"
+                  name="customer_email"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="customerPhone">Customer Phone *</label>
+                <input
+                  type="tel"
+                  id="customerPhone"
+                  name="customer_phone"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="bookingStatus">Status *</label>
+                <select id="bookingStatus" name="status" required>
+                  <option value="confirmed">Confirmed</option>
+                  <option value="pending">Pending</option>
+                  <option value="cancelled">Cancelled</option>
+                  <option value="completed">Completed</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="totalPrice">Total Price *</label>
+                <input
+                  type="number"
+                  id="totalPrice"
+                  name="total_price"
+                  step="0.01"
+                  min="0"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="bookingNotes">Notes</label>
+              <textarea id="bookingNotes" name="notes" rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary">
+                Save Booking
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="hideBookingForm()"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Bookings Table -->
+        <section class="admin-table">
+          <div id="bookingsTable">
+            <div class="loading">
+              <div class="spinner"></div>
+              <p>Loading bookings...</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="../../assets/js/main.js"></script>
+    <script src="../../assets/js/admin.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        loadCourtsForDropdown();
+      });
+
+      function showAddBookingForm() {
+        document.getElementById("bookingFormSection").style.display = "block";
+        document.getElementById("bookingFormTitle").textContent =
+          "Add Manual Booking";
+        document.getElementById("bookingForm").reset();
+        document.getElementById("bookingId").value = "";
+        const today = new Date().toISOString().split("T")[0];
+        document.getElementById("bookingDate").min = today;
+      }
+
+      function hideBookingForm() {
+        document.getElementById("bookingFormSection").style.display = "none";
+      }
+
+      async function loadCourtsForDropdown() {
+        try {
+          const userToken = localStorage.getItem("userToken");
+          const response = await fetch("http://localhost:8000/admin/courts", {
+            headers: { Authorization: `Bearer ${userToken}` },
+          }).then((res) => res.json());
+          const courts = response.courts || response;
+          const select = document.getElementById("bookingCourt");
+
+          if (select) {
+            const firstOption = select.options[0];
+            select.innerHTML = "";
+            select.appendChild(firstOption);
+            courts.forEach((court) => {
+              const option = document.createElement("option");
+              option.value = court.id;
+              option.textContent = `${court.name} (${court.type})`;
+              select.appendChild(option);
+            });
+          }
+        } catch (error) {
+          console.error("Error loading courts:", error);
+        }
+      }
+    </script>
+  </body>
+</html>

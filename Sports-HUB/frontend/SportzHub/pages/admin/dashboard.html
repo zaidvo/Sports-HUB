@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - SportzHub</title>
+    <link rel="stylesheet" href="../../assets/css/style.css?v=2" />
+    <link rel="stylesheet" href="../../assets/css/admin.css?v=2" />
+  </head>
+  <body>
+    <!-- Top Navigation -->
+    <nav class="admin-topnav">
+      <div class="admin-topnav-container">
+        <a href="dashboard.html" class="admin-logo">SportzHub Admin</a>
+        <ul class="admin-nav">
+          <li>
+            <a href="dashboard.html" class="active">
+              <span class="admin-nav-icon">📊</span>
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="courts.html">
+              <span class="admin-nav-icon">🏟️</span>
+              Manage Courts
+            </a>
+          </li>
+          <li>
+            <a href="bookings.html">
+              <span class="admin-nav-icon">📅</span>
+              Manage Bookings
+            </a>
+          </li>
+        </ul>
+        <div class="admin-user">
+          <div class="admin-user-info">
+            <span>👤</span>
+            <span id="userName">Admin</span>
+          </div>
+          <button class="logout-btn" id="logoutBtn">Logout</button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="admin-container">
+      <!-- Main Content -->
+      <main class="admin-main">
+        <!-- Header -->
+        <header class="admin-header">
+          <h1>Dashboard</h1>
+        </header>
+
+        <!-- Statistics Cards -->
+        <section class="stats-grid">
+          <div class="stat-card">
+            <div
+              class="stat-icon"
+              style="font-size: 2rem; margin-bottom: 0.5rem"
+            >
+              📅
+            </div>
+            <div class="stat-number" id="totalBookings">-</div>
+            <div class="stat-label">Total Bookings</div>
+          </div>
+          <div class="stat-card">
+            <div
+              class="stat-icon"
+              style="font-size: 2rem; margin-bottom: 0.5rem"
+            >
+              💰
+            </div>
+            <div class="stat-number" id="totalRevenue">-</div>
+            <div class="stat-label">Total Revenue</div>
+          </div>
+          <div class="stat-card">
+            <div
+              class="stat-icon"
+              style="font-size: 2rem; margin-bottom: 0.5rem"
+            >
+              🏟️
+            </div>
+            <div class="stat-number" id="activeCourts">-</div>
+            <div class="stat-label">Total Courts</div>
+          </div>
+          <div class="stat-card">
+            <div
+              class="stat-icon"
+              style="font-size: 2rem; margin-bottom: 0.5rem"
+            >
+              👥
+            </div>
+            <div class="stat-number" id="todayBookings">-</div>
+            <div class="stat-label">Active Users</div>
+          </div>
+        </section>
+
+        <!-- Recent Bookings -->
+        <section class="admin-table">
+          <h2>Recent Bookings</h2>
+          <div id="recentBookingsTable">
+            <div class="loading">
+              <div class="spinner"></div>
+              <p>Loading recent bookings...</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="quick-actions-section">
+          <h2>Quick Actions</h2>
+          <div class="quick-actions-grid">
+            <div class="quick-action-card">
+              <h3>🏟️ Add New Court</h3>
+              <p>Create a new court listing</p>
+              <a href="courts.html" class="btn btn-primary">Manage Courts</a>
+            </div>
+            <div class="quick-action-card">
+              <h3>📅 View All Bookings</h3>
+              <p>Manage all court bookings</p>
+              <a href="bookings.html" class="btn btn-primary"
+                >Manage Bookings</a
+              >
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="../../assets/js/main.js"></script>
+    <script src="../../assets/js/admin.js"></script>
+  </body>
+</html>
